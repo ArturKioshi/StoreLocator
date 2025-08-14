@@ -46,4 +46,22 @@ public class StoreController {
         FindStoresNearbyCoordinatesResponseDTO response = this.storeGeoService.findStoresNearbyCoordinates(findStoresNearbyCoordinatesRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetStoreResponseDTO> getStore(@PathVariable UUID id) {
+        GetStoreResponseDTO response = this.storeCrudService.getStore(new GetStoreRequestDTO(id));
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/find-all")
+    public ResponseEntity<GetAllStoresResponseDTO> getAllStores() {
+        GetAllStoresResponseDTO response = this.storeCrudService.getAllStores();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<UpdateStoreResponseDTO>  updateStore(@RequestBody UpdateStoreRequestDTO updateStoreRequestDTO, @PathVariable UUID id) {
+        UpdateStoreResponseDTO response = this.storeCrudService.updateStore(id, updateStoreRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
