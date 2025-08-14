@@ -1,7 +1,9 @@
 package com.mapas.maps.services.store;
 
 import com.mapas.maps.dtos.store.FindStoresNearbyAddressRequestDTO;
+import com.mapas.maps.dtos.store.FindStoresNearbyAddressResponseDTO;
 import com.mapas.maps.dtos.store.FindStoresNearbyCoordinatesRequestDTO;
+import com.mapas.maps.dtos.store.FindStoresNearbyCoordinatesResponseDTO;
 import com.mapas.maps.entities.StoreEntity;
 import com.mapas.maps.repositories.StoreRepository;
 import com.mapas.maps.services.GeolocationService;
@@ -23,7 +25,7 @@ public class StoreGeoService {
         this.geolocationService = geolocationService;
     }
 
-    public List<StoreEntity> findStoresNearbyAdress(FindStoresNearbyAddressRequestDTO findStoresNearbyAddressRequestDTO) {
+    public FindStoresNearbyAddressResponseDTO findStoresNearbyAdress(FindStoresNearbyAddressRequestDTO findStoresNearbyAddressRequestDTO) {
         var locations = geolocationService.searchByAdress(findStoresNearbyAddressRequestDTO.getAddress());
 
         if (locations.isEmpty() || locations == null) {
@@ -33,10 +35,14 @@ public class StoreGeoService {
         double lat = Double.parseDouble(locations.get(0).getLat());
         double lon = Double.parseDouble(locations.get(0).getLon());
 
-        return this.storeRepository.findStoresNearby(lat, lon, findStoresNearbyAddressRequestDTO.getRadiusKm());
+        List<StoreEntity> stores = this.storeRepository.findStoresNearby(lat, lon, findStoresNearbyAddressRequestDTO.getRadiusKm());
+
+        return new FindStoresNearbyAddressResponseDTO(stores);
     }
 
-    public List<StoreEntity> findStoresNearbyCoordinates(FindStoresNearbyCoordinatesRequestDTO findStoresNearbyCoordinatesRequestDTO) {
-        return this.storeRepository.findStoresNearby(findStoresNearbyCoordinatesRequestDTO.getLat(), findStoresNearbyCoordinatesRequestDTO.getLon(), findStoresNearbyCoordinatesRequestDTO.getRadiusKm());
+    public FindStoresNearbyCoordinatesResponseDTO findStoresNearbyCoordinates(FindStoresNearbyCoordinatesRequestDTO findStoresNearbyCoordinatesRequestDTO) {
+        List<StoreEntity> stores = this.storeRepository.findStoresNearby(findStoresNearbyCoordinatesRequestDTO.getLat(), findStoresNearbyCoordinatesRequestDTO.getLon(), findStoresNearbyCoordinatesRequestDTO.getRadiusKm());
+
+        return new FindStoresNearbyCoordinatesResponseDTO(stores);
     }
 }
